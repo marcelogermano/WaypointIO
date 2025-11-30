@@ -34,13 +34,18 @@
 
 ```xml
 <repositories>
-    // to be added
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 </repositories>
 
 <dependencies>
     <dependency>
-        <groupId>dev.kaxtusik</groupId>
-        <artifactId>waypointio</artifactId>
+        <groupId>com.github.DEVKaxtusik</groupId>
+        <artifactId>WaypointIO</artifactId>
         <version>1.0.0</version>
     </dependency>
 </dependencies>
@@ -50,11 +55,12 @@
 
 ```gradle
 repositories {
-    // to be added
+    mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
-    implementation("dev.kaxtusik:waypointio:1.0.0")
+    implementation("com.github.DEVKaxtusik:WaypointIO:Tag")
 }
 ```
 
