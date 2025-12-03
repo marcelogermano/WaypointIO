@@ -44,7 +44,7 @@
     <dependency>
         <groupId>com.github.DEVKaxtusik</groupId>
         <artifactId>WaypointIO</artifactId>
-        <version>1.0.0</version>
+        <version>v1.0.1</version>
     </dependency>
 </dependencies>
 ```
@@ -58,7 +58,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.DEVKaxtusik:WaypointIO:Tag")
+    implementation("com.github.DEVKaxtusik:WaypointIO:v1.0.1")
 }
 ```
 
