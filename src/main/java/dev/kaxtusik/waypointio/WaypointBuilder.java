@@ -1,11 +1,8 @@
-package dev.kaxtusik.waypointIO.api;
+package dev.kaxtusik.waypointio;
 
 import com.github.retrooper.packetevents.resources.ResourceLocation;
-import dev.kaxtusik.waypointIO.impl.SimpleWaypoint;
 import org.bukkit.Location;
-import org.jetbrains.annotations.ApiStatus;
-
-import java.awt.*;
+import java.awt.Color;
 import java.util.UUID;
 
 public class WaypointBuilder {
@@ -14,8 +11,7 @@ public class WaypointBuilder {
     private String name;
     private Location location;
     private Color color = Color.WHITE;
-    private WaypointStyle style;
-    private ResourceLocation customStyle;
+    private ResourceLocation styleLocation = new ResourceLocation("default");
 
     public WaypointBuilder id(UUID id) {
         this.id = id;
@@ -38,26 +34,19 @@ public class WaypointBuilder {
     }
 
     public WaypointBuilder style(WaypointStyle style) {
-        this.style = style;
+        this.styleLocation = style.getResourceLocation();
         return this;
     }
 
-    @ApiStatus.Experimental
     public WaypointBuilder customStyle(String namespace, String path) {
-        this.customStyle = new ResourceLocation(namespace, path);
-        return this;
-    }
-
-    @ApiStatus.Experimental
-    public WaypointBuilder customStyle(String path) {
-        this.customStyle = new ResourceLocation(path);
+        this.styleLocation = new ResourceLocation(namespace, path);
         return this;
     }
 
     public Waypoint build() {
         if (location == null) {
-            throw new IllegalStateException("Location is required");
+            throw new IllegalStateException("Location cannot be null");
         }
-        return new SimpleWaypoint(id, name, location, color, style, customStyle);
+        return new Waypoint(id, name, location, color, styleLocation);
     }
 }

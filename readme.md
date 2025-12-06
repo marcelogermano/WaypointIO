@@ -10,21 +10,21 @@
 
 ## **Features**
 
-* 🎯 Simple fluent API
-* 🎨 Customizable colors & styles
-* 📦 Resource pack icon support (Experimental)
-* 🔄 Real-time updates
-* 👥 Per-player waypoints
-* 🚀 No entities — pure packets (built on PacketEvents)
+- 🎯 **Simple Fluent API** — Create waypoints with an intuitive builder pattern  
+- 🎨 **Customizable** — Full control over colors and built-in styles  
+- 📦 **Resource Pack Support** — Use custom icons from your resource packs *(Experimental)*  
+- 🔄 **Real-time Updates** — Modify waypoints on the fly  
+- 👥 **Per-Player** — Waypoints are individual to each player  
+- 🚀 **Zero Entities** — Pure packet-based implementation (built on PacketEvents)
 
 ---
 
 ## **Requirements**
 
-* Minecraft **1.21.5+**
-* Paper / Spigot / Purpur
-* [PacketEvents](https://github.com/retrooper/packetevents) **2.10.0+**
-* Java **21+**
+- Minecraft **1.21.5+**
+- Paper / Spigot / Purpur
+- [PacketEvents](https://github.com/retrooper/packetevents) **2.10.1+**
+- Java **21+**
 
 ---
 
@@ -44,7 +44,7 @@
     <dependency>
         <groupId>com.github.DEVKaxtusik</groupId>
         <artifactId>WaypointIO</artifactId>
-        <version>v1.0.1</version>
+        <version>v1.1.0</version>
     </dependency>
 </dependencies>
 ```
@@ -58,7 +58,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.DEVKaxtusik:WaypointIO:v1.0.1")
+    implementation("com.github.DEVKaxtusik:WaypointIO:v1.1.0")
 }
 ```
 
@@ -66,68 +66,110 @@ dependencies {
 
 ## **Quick Start**
 
-```java
-// Initialize in onEnable()
-WaypointIO.initialize(JavaPlugin);
+### **1. Initialize the Manager**
 
-// Create waypoint
-Waypoint waypoint = WaypointIO.getInstance().builder()
+You must initialize the `WaypointManager` in your plugin’s `onEnable()`.
+This performs the version check automatically.
+
+```java
+public class MyPlugin extends JavaPlugin {
+    
+    private WaypointManager waypointManager;
+
+    @Override
+    public void onEnable() {
+        try {
+            // Initialize manager (throws exception if server version < 1.21.5)
+            this.waypointManager = new WaypointManager(this);
+        } catch (UnsupportedOperationException e) {
+            getLogger().severe("WaypointIO requires Minecraft 1.21.5+");
+            getServer().getPluginManager().disablePlugin(this);
+        }
+    }
+}
+```
+
+---
+
+### **2. Create and Show a Waypoint**
+
+```java
+// 1. Create a Waypoint object using the Builder
+Waypoint home = new WaypointBuilder()
         .name("Home")
         .location(player.getLocation())
         .style(WaypointStyle.DEFAULT)
         .color(Color.GREEN)
         .build();
 
-// Show to player
-WaypointIO.getInstance().getManager().showWaypoint(player, waypoint);
+// 2. Show it to the player
+waypointManager.showWaypoint(player, home);
 ```
 
 ---
 
 ## **Advanced Usage**
 
-### **Update a waypoint**
+### **Update a Waypoint**
+
+Create a *new* Waypoint object with the **same ID** to update it.
 
 ```java
-waypointIO.getManager().updateWaypoint(player, updatedWaypoint);
-```
-
-### **Custom resource pack icon (Experimental)**
-
-```java
-Waypoint custom = waypointIO.builder()
-        .customStyle("namespace", "path")
+Waypoint updatedHome = new WaypointBuilder()
+        .id(home.getId()) // IMPORTANT: Use the same ID
+        .name("Home (Moved)")
+        .location(newLocation)
         .color(Color.YELLOW)
         .build();
-```
 
-### **Remove waypoint**
-
-```java
-waypointIO.getManager().hideWaypoint(player, waypointId);
+waypointManager.updateWaypoint(player, updatedHome);
 ```
 
 ---
 
-## **Documentation**
+### **Custom Resource Pack Icon (Experimental)**
 
-See **CONTRIBUTING.md** for full documentation and usage examples.
+Use custom icons defined in your server resource pack.
+
+```java
+Waypoint custom = new WaypointBuilder()
+        .name("Quest Marker")
+        .location(targetLoc)
+        .customStyle("my_namespace", "quest_icon") // References my_namespace:quest_icon
+        .color(Color.WHITE)
+        .build();
+
+waypointManager.showWaypoint(player, custom);
+```
+
+---
+
+### **Remove Waypoints**
+
+```java
+// Remove a specific waypoint
+waypointManager.hideWaypoint(player, home.getId());
+
+// Remove ALL waypoints for a player
+waypointManager.hideAllWaypoints(player);
+```
 
 ---
 
 ## **Contributing**
 
-Contributions welcome! Please read **CONTRIBUTING.md** for guidelines.
+Contributions are welcome!
+Please read **CONTRIBUTING.md** for guidelines on reporting bugs or submitting pull requests.
 
 ---
 
 ## **License**
 
-GPLv3 License — see **LICENSE** for details.
+**GPLv3 License** — see `LICENSE` for details.
 
 ---
 
 ## **Credits**
 
-Built with **PacketEvents**
-Made with ❤️ by **[DEVKaxtusik](https://github.com/DEVKaxtusik)**
+* Built with PacketEvents
+* Made with ❤️ by **DEVKaxtusik**
